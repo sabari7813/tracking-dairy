@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thalir — a place your studying grows</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,440;9..144,600;9..144,680&family=Newsreader:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;600&family=Meera+Inimai&family=Catamaran:wght@600;700&display=swap');
+
+:root{
+  --dusk-1:#0e1a14;
+  --dusk-2:#152820;
+  --dusk-3:#1c342a;
+  --moss-1:#4a7c59;
+  --moss-2:#7fb069;
+  --moss-3:#c9e4a8;
+  --gold:#e0a458;
+  --gold-dim:#b5824a;
+  --bone:#f2ecdd;
+  --bone-dim:#cfc6ad;
+  --clay:#a8542f;
+  --glass-bg:rgba(242,236,221,0.06);
+  --glass-border:rgba(242,236,221,0.12);
+  --display:'Fraunces', serif;
+  --body:'Newsreader', serif;
+  --mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse 1200px 700px at 50% -8%, #1f3a2c 0%, transparent 55%),
+    radial-gradient(ellipse 900px 500px at 90% 20%, rgba(224,164,88,0.06) 0%, transparent 60%),
+    linear-gradient(190deg, var(--dusk-1) 0%, #0a1310 100%);
+  color:var(--bone);
+  font-family:var(--body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+::selection{background:var(--moss-2);color:var(--dusk-1);}
+
+/* film-grain atmosphere */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  pointer-events:none;
+  opacity:0.035;
+  z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* drifting fireflies */
+.firefly{
+  position:fixed;
+  width:3px;height:3px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 8px 2px rgba(224,164,88,0.8);
+  pointer-events:none;
+  opacity:0;
+  animation:drift 14s ease-in-out infinite;
+  z-index:1;
+}
+@keyframes drift{
+  0%{opacity:0; transform:translate(0,0);}
+  15%{opacity:.9;}
+  50%{transform:translate(30px,-60px);}
+  85%{opacity:.7;}
+  100%{opacity:0; transform:translate(-20px,-120px);}
+}
+
+.wrap{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 22px 100px;}
+
+/* ---------------- HERO ---------------- */
+.hero{
+  padding:80px 0 30px;
+  text-align:center;
+  opacity:0;
+  animation:riseIn 1s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes riseIn{
+  from{opacity:0; transform:translateY(18px);}
+  to{opacity:1; transform:translateY(0);}
+}
+.logo-wrap{
+  max-width:420px;
+  margin:0 auto 18px;
+}
+.thalir-logo{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.mark{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--moss-3);
+  margin-bottom:22px;
+  opacity:.75;
+}
+.mark::before, .mark::after{content:'';width:20px;height:1px;background:var(--moss-2);opacity:.5;}
+h1{
+  font-family:var(--display);
+  font-weight:440;
+  font-size:clamp(38px,6.4vw,68px);
+  line-height:0.98;
+  letter-spacing:-0.015em;
+  margin:0 0 18px;
+}
+h1 .grow{
+  font-style:italic;
+  font-weight:300;
+  background:linear-gradient(100deg, var(--moss-3), var(--gold) 70%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{
+  font-family:var(--body);
+  font-style:italic;
+  font-size:18px;
+  color:var(--bone-dim);
+  max-width:460px;
+  margin:0 auto;
+  line-height:1.6;
+}
+.kural-text{
+  font-family:'Meera Inimai', sans-serif !important;
+  font-style:normal !important;
+  font-size:19px !important;
+  line-height:1.8 !important;
+  color:var(--moss-3) !important;
+  max-width:480px;
+}
+
+/* ---------------- CANOPY STAGE (signature element) ---------------- */
+.canopy-stage{
+  margin-top:56px;
+  border-radius:28px;
+  background:linear-gradient(180deg, rgba(28,52,42,0.5) 0%, rgba(14,26,20,0.7) 100%);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:0;
+  position:relative;
+  overflow:hidden;
+  opacity:0;
+  animation:riseIn 1s cubic-bezier(.22,1,.36,1) .25s forwards;
+}
+.canopy-stage::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 400px 260px at 50% 100%, rgba(127,176,105,0.14) 0%, transparent 70%);
+  pointer-events:none;
+}
+.stage-grid{
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  align-items:stretch;
+}
+.stage-copy{
+  padding:38px 40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  z-index:2;
+}
+.stage-tag{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:10px;
+}
+.stage-title{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:32px;
+  margin-bottom:12px;
+  transition:opacity .3s;
+}
+.stage-copy p{
+  color:var(--bone-dim);
+  font-size:15px;
+  line-height:1.6;
+  margin:0 0 22px;
+  max-width:340px;
+}
+.ring-wrap{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.ring{width:56px;height:56px;flex-shrink:0;}
+.ring-num{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--moss-3);
+}
+.ring-num b{color:var(--bone);font-size:16px;}
+
+.canopy-visual{
+  position:relative;
+  min-height:340px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+.canopy-visual svg{width:100%;height:100%;overflow:visible;}
+.leaf-particle{transform-origin:center;}
+
+@media(max-width:760px){
+  .stage-grid{grid-template-columns:1fr;}
+  .canopy-visual{min-height:260px;order:-1;}
+}
+
+/* ---------------- COMPOSER ---------------- */
+.composer{
+  margin-top:22px;
+  border-radius:22px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:26px 28px;
+  opacity:0;
+  animation:riseIn .8s cubic-bezier(.22,1,.36,1) .4s forwards;
+}
+.composer-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.field{
+  position:relative;
+  flex:1;
+  min-width:150px;
+}
+.field.grow{flex:2.2;min-width:220px;}
+.field label{
+  position:absolute;
+  top:-8px;
+  left:12px;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--moss-3);
+  background:var(--dusk-2);
+  padding:0 6px;
+  opacity:.85;
+}
+input[type=text]{
+  width:100%;
+  font-family:var(--body);
+  font-size:15px;
+  color:var(--bone);
+  background:rgba(0,0,0,0.18);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
+  padding:14px 15px;
+  outline:none;
+  transition:border-color .2s, background .2s;
+}
+input[type=text]::placeholder{color:var(--bone-dim);opacity:.4;}
+input[type=text]:focus{border-color:var(--moss-2);background:rgba(0,0,0,0.28);}
+
+.plant-btn{
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.03em;
+  color:var(--dusk-1);
+  background:linear-gradient(135deg, var(--moss-3), var(--moss-2));
+  border:none;
+  border-radius:12px;
+  padding:0 24px;
+  cursor:pointer;
+  transition:transform .15s, box-shadow .15s;
+  display:flex;align-items:center;gap:7px;
+}
+.plant-btn:hover{box-shadow:0 6px 20px rgba(127,176,105,0.35); transform:translateY(-1px);}
+.plant-btn:active{transform:scale(.96);}
+
+/* ---------------- ROADMAP LIST ---------------- */
+.panel{
+  margin-top:22px;
+  border-radius:22px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:30px 28px;
+  opacity:0;
+  animation:riseIn .8s cubic-bezier(.22,1,.36,1) .5s forwards;
+}
+.panel-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.panel-title{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:21px;
+}
+.panel-title .count{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--moss-3);
+  font-weight:400;
+  margin-left:10px;
+}
+
+.topic-item{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:flex-start;
+  gap:14px;
+  padding:15px 4px;
+  border-bottom:1px solid rgba(242,236,221,0.08);
+  position:relative;
+}
+.topic-item:last-child{border-bottom:none;}
+
+.check{
+  width:26px;height:26px;
+  border-radius:8px;
+  border:1.5px solid var(--moss-2);
+  background:transparent;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  flex-shrink:0;
+  margin-top:2px;
+}
+.check svg{width:14px;height:14px;opacity:0;transform:scale(.5);transition:all .2s;}
+.topic-item.done .check{
+  background:var(--moss-2);
+  transform:scale(1.05);
+}
+.topic-item.done .check svg{opacity:1;transform:scale(1);}
+
+.topic-body{min-width:0;}
+.topic-subject{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:3px;
+}
+.topic-name{
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.4;
+  transition:all .3s;
+}
+.topic-item.done .topic-name{
+  color:var(--bone-dim);
+  text-decoration:line-through;
+  text-decoration-color:var(--moss-2);
+}
+.notes-toggle{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--moss-3);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:4px 0;
+  opacity:.7;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.notes-area{display:none;margin-top:8px;}
+.notes-area.open{display:block;}
+.notes-area textarea{
+  width:100%;
+  min-height:56px;
+  font-family:var(--body);
+  font-size:13px;
+  color:var(--bone);
+  background:rgba(0,0,0,0.2);
+  border:1px solid var(--glass-border);
+  border-radius:10px;
+  padding:10px 12px;
+  resize:vertical;
+  outline:none;
+}
+.del-btn{
+  background:none;border:none;
+  color:var(--clay);
+  font-size:17px;
+  cursor:pointer;
+  opacity:.4;
+  padding:4px 6px;
+  transition:opacity .15s;
+  align-self:flex-start;
+}
+.del-btn:hover{opacity:1;}
+
+.empty-state{
+  text-align:center;
+  padding:34px 10px;
+  color:var(--bone-dim);
+  font-family:var(--body);
+  font-style:italic;
+  font-size:15px;
+}
+.empty-state .glyph{
+  font-size:30px;
+  display:block;
+  margin-bottom:10px;
+  opacity:.6;
+}
+
+/* ---------------- STATS ---------------- */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:22px;
+}
+.stat{
+  border-radius:18px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);
+  padding:24px 18px;
+  text-align:center;
+  opacity:0;
+  animation:riseIn .8s cubic-bezier(.22,1,.36,1) .6s forwards;
+}
+.stat-num{
+  font-family:var(--display);
+  font-weight:680;
+  font-size:36px;
+  background:linear-gradient(135deg, var(--moss-3), var(--gold));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1;
+  margin-bottom:8px;
+}
+.stat-label{
+  font-family:var(--mono);
+  font-size:10.5px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--bone-dim);
+}
+
+/* ---------------- HEATMAP ---------------- */
+.heat-legend{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--bone-dim);
+  margin-top:4px;
+}
+.heat-legend .sq{width:9px;height:9px;border-radius:2px;}
+.heatmap{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(12px,1fr));
+  gap:5px;
+  margin-top:18px;
+}
+.day-cell{
+  aspect-ratio:1;
+  border-radius:4px;
+  background:rgba(242,236,221,0.06);
+  transition:transform .15s;
+}
+.day-cell:hover{transform:scale(1.25);}
+.day-cell[data-level="1"]{background:#2d4a35;}
+.day-cell[data-level="2"]{background:var(--moss-1);}
+.day-cell[data-level="3"]{background:var(--moss-2);}
+.day-cell[data-level="4"]{background:var(--moss-3);}
+
+/* ---------------- HISTORY ---------------- */
+.history-list{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  max-height:300px;
+  overflow-y:auto;
+  padding-right:6px;
+}
+.history-list::-webkit-scrollbar{width:6px;}
+.history-list::-webkit-scrollbar-thumb{background:var(--moss-1);border-radius:6px;}
+.history-day{
+  border-left:2px solid var(--moss-2);
+  padding-left:16px;
+}
+.history-date{
+  font-family:var(--mono);
+  font-size:10.5px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+  margin-bottom:5px;
+}
+.history-topic{
+  font-family:var(--body);
+  font-size:14.5px;
+  padding:2px 0;
+  color:var(--bone-dim);
+}
+.history-topic .sub-tag{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--moss-3);
+  margin-right:7px;
+}
+
+footer{
+  text-align:center;
+  padding:50px 20px 0;
+  font-family:var(--mono);
+  font-size:10.5px;
+  letter-spacing:.06em;
+  color:var(--bone-dim);
+  opacity:.35;
+}
+
+/* burst particles on completion */
+.burst-leaf{
+  position:fixed;
+  width:8px;height:8px;
+  border-radius:0 60% 0 60%;
+  background:var(--moss-2);
+  pointer-events:none;
+  z-index:50;
+  animation:burst 0.9s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes burst{
+  0%{opacity:1; transform:translate(0,0) rotate(0deg) scale(1);}
+  100%{opacity:0; transform:var(--bx,translate(40px,-70px)) rotate(220deg) scale(.4);}
+}
+
+@media(prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important;}
+  .hero,.canopy-stage,.composer,.panel,.stat{opacity:1 !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 680 300" role="img" aria-labelledby="logoTitle logoDesc" class="thalir-logo">
+        <title id="logoTitle">Thalir</title>
+        <desc id="logoDesc">Brush calligraphy wordmark reading Thalir with swirl flourishes</desc>
+        <defs>
+          <linearGradient id="brushGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c9e4a8"/>
+            <stop offset="100%" stop-color="#7fb069"/>
+          </linearGradient>
+        </defs>
+        <path d="M 90 170 Q 55 155 60 115 Q 63 85 100 78 Q 120 75 128 90" fill="none" stroke="#7fb069" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="128" cy="90" r="2" fill="#7fb069"/>
+        <path d="M 110 195 Q 75 210 65 180" fill="none" stroke="#e0a458" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="65" cy="180" r="1.6" fill="#e0a458"/>
+        <path d="M 590 170 Q 625 155 620 115 Q 617 85 580 78 Q 560 75 552 90" fill="none" stroke="#7fb069" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="552" cy="90" r="2" fill="#7fb069"/>
+        <path d="M 570 195 Q 605 210 615 180" fill="none" stroke="#e0a458" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="615" cy="180" r="1.6" fill="#e0a458"/>
+        <text x="340" y="195" text-anchor="middle" font-family="'Meera Inimai', sans-serif" font-weight="700" font-size="98" fill="url(#brushGrad)" letter-spacing="1">தளிர்</text>
+        <path d="M 250 225 Q 235 250 195 248 Q 165 246 155 225" fill="none" stroke="#7fb069" stroke-width="1.3" stroke-linecap="round"/>
+        <ellipse cx="155" cy="225" rx="5" ry="3.2" fill="#7fb069" transform="rotate(-30 155 225)"/>
+        <path d="M 430 225 Q 445 250 485 248 Q 515 246 525 225" fill="none" stroke="#7fb069" stroke-width="1.3" stroke-linecap="round"/>
+        <ellipse cx="525" cy="225" rx="5" ry="3.2" fill="#7fb069" transform="rotate(30 525 225)"/>
+        <line x1="300" y1="270" x2="250" y2="270" stroke="#cfc6ad" stroke-width="0.8" opacity="0.5"/>
+        <line x1="430" y1="270" x2="380" y2="270" stroke="#cfc6ad" stroke-width="0.8" opacity="0.5"/>
+        <text x="340" y="276" text-anchor="middle" font-family="'Catamaran', sans-serif" font-size="12" font-weight="600" letter-spacing="6" fill="#e0a458">THALIR</text>
+      </svg>
+    </div>
+    <h1>Plant a topic.<br><span class="grow">Watch it grow.</span></h1>
+    <p class="kural-text">தெய்வத்தான் ஆகா தெனினும் முயற்சிதன்<br>மெய்வருத்தக் கூலி தரும்</p>
+  </div>
+
+  <div class="canopy-stage">
+    <div class="stage-grid">
+      <div class="stage-copy">
+        <div class="stage-tag" id="stage-tag">stage 1 · seed</div>
+        <div class="stage-title" id="stage-title">A seed, resting</div>
+        <p id="stage-desc">Add your first topic below — this is where the roadmap begins.</p>
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(242,236,221,0.12)" stroke-width="4"/>
+            <circle id="ring-progress" cx="28" cy="28" r="24" fill="none" stroke="url(#ringGrad)" stroke-width="4" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8" transform="rotate(-90 28 28)" style="transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);"/>
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c9e4a8"/>
+                <stop offset="100%" stop-color="#e0a458"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="ring-num"><b id="ring-num">0</b> / <span id="ring-total">0</span> topics</div>
+        </div>
+      </div>
+      <div class="canopy-visual" id="canopy-visual"></div>
+    </div>
+  </div>
+
+  <div class="composer">
+    <div class="composer-row">
+      <div class="field">
+        <label>Subject</label>
+        <input type="text" id="subject-input" placeholder="Physics">
+      </div>
+      <div class="field grow">
+        <label>Topic</label>
+        <input type="text" id="topic-input" placeholder="Rotational dynamics">
+      </div>
+      <button class="plant-btn" id="add-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Plant
+      </button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Roadmap<span class="count" id="roadmap-count"></span></div>
+    </div>
+    <div id="topic-list"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat" style="animation-delay:.6s">
+      <div class="stat-num" id="streak-num">0</div>
+      <div class="stat-label">Day streak</div>
+    </div>
+    <div class="stat" style="animation-delay:.68s">
+      <div class="stat-num" id="today-num">0</div>
+      <div class="stat-label">Done today</div>
+    </div>
+    <div class="stat" style="animation-delay:.76s">
+      <div class="stat-num" id="total-num">0</div>
+      <div class="stat-label">Total finished</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Last 7 weeks</div>
+    </div>
+    <div class="heatmap" id="heatmap"></div>
+    <div class="heat-legend">
+      less
+      <span class="sq" style="background:rgba(242,236,221,0.06)"></span>
+      <span class="sq" style="background:#2d4a35"></span>
+      <span class="sq" style="background:var(--moss-1)"></span>
+      <span class="sq" style="background:var(--moss-2)"></span>
+      <span class="sq" style="background:var(--moss-3)"></span>
+      more
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">History</div>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <footer>your growth is saved in this browser · nothing leaves this device</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const STORE_KEY = "canopy-log-v2";
+const state = load();
+
+function load(){
+  try{ const raw = localStorage.getItem(STORE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return { topics: [], history: {} };
+}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function fmtDate(key){
+  const d = new Date(key+"T00:00:00");
+  return d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+const topicList = document.getElementById("topic-list");
+const subjectInput = document.getElementById("subject-input");
+const topicInput = document.getElementById("topic-input");
+const addBtn = document.getElementById("add-btn");
+const roadmapCount = document.getElementById("roadmap-count");
+const stageTag = document.getElementById("stage-tag");
+const stageTitle = document.getElementById("stage-title");
+const stageDesc = document.getElementById("stage-desc");
+const ringProgress = document.getElementById("ring-progress");
+const ringNum = document.getElementById("ring-num");
+const ringTotal = document.getElementById("ring-total");
+const canopyVisual = document.getElementById("canopy-visual");
+const streakNum = document.getElementById("streak-num");
+const todayNum = document.getElementById("today-num");
+const totalNum = document.getElementById("total-num");
+const heatmap = document.getElementById("heatmap");
+const historyList = document.getElementById("history-list");
+
+function addTopic(){
+  const subject = subjectInput.value.trim() || "General";
+  const name = topicInput.value.trim();
+  if(!name){ topicInput.focus(); return; }
+  state.topics.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), subject, name, done:false, notes:"" });
+  topicInput.value = "";
+  save(); render();
+  topicInput.focus();
+}
+addBtn.addEventListener("click", addTopic);
+topicInput.addEventListener("keydown", e=>{ if(e.key==="Enter") addTopic(); });
+subjectInput.addEventListener("keydown", e=>{ if(e.key==="Enter") topicInput.focus(); });
+
+function toggleTopic(id, evt){
+  const t = state.topics.find(x=>x.id===id);
+  if(!t) return;
+  t.done = !t.done;
+  const key = todayKey();
+  if(t.done){
+    if(!state.history[key]) state.history[key] = [];
+    state.history[key].push({subject:t.subject, name:t.name});
+    if(evt) burstLeaves(evt.currentTarget);
+  } else {
+    if(state.history[key]){
+      const idx = state.history[key].findIndex(h=>h.name===t.name && h.subject===t.subject);
+      if(idx>-1) state.history[key].splice(idx,1);
+      if(state.history[key].length===0) delete state.history[key];
+    }
+  }
+  save(); render();
+}
+
+function burstLeaves(el){
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+  for(let i=0;i<8;i++){
+    const leaf = document.createElement("div");
+    leaf.className = "burst-leaf";
+    const angle = (Math.PI*2/8)*i + Math.random()*0.4;
+    const dist = 40 + Math.random()*30;
+    leaf.style.left = cx+"px";
+    leaf.style.top = cy+"px";
+    leaf.style.setProperty("--bx", `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist - 20}px)`);
+    leaf.style.background = i%2===0 ? "var(--moss-2)" : "var(--gold)";
+    document.body.appendChild(leaf);
+    setTimeout(()=>leaf.remove(), 950);
+  }
+}
+
+function deleteTopic(id){
+  state.topics = state.topics.filter(x=>x.id!==id);
+  save(); render();
+}
+function toggleNotes(id, btn){
+  btn.closest(".topic-item").querySelector(".notes-area").classList.toggle("open");
+}
+function updateNotes(id, val){
+  const t = state.topics.find(x=>x.id===id);
+  if(t) t.notes = val;
+  save();
+}
+
+function renderTopics(){
+  const done = state.topics.filter(t=>t.done).length;
+  roadmapCount.textContent = state.topics.length ? ` · ${done}/${state.topics.length}` : "";
+  if(state.topics.length===0){
+    topicList.innerHTML = `<div class="empty-state"><span class="glyph">◌</span>Your roadmap is empty. Plant the first topic above.</div>`;
+    return;
+  }
+  topicList.innerHTML = state.topics.map(t=>`
+    <div class="topic-item ${t.done?'done':''}" data-id="${t.id}">
+      <button class="check" aria-label="Toggle ${escapeHtml(t.name)}" onclick="Canopy.toggle('${t.id}', event)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0e1a14" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topic-body">
+        <div class="topic-subject">${escapeHtml(t.subject)}</div>
+        <div class="topic-name">${escapeHtml(t.name)}</div>
+        <button class="notes-toggle" onclick="Canopy.notes('${t.id}', this)">${t.notes ? 'view notes' : '+ add notes'}</button>
+        <div class="notes-area">
+          <textarea placeholder="What did you learn? Anything to revisit?" onblur="Canopy.updateNotes('${t.id}', this.value)">${escapeHtml(t.notes||"")}</textarea>
+        </div>
+      </div>
+      <button class="del-btn" aria-label="Remove" onclick="Canopy.remove('${t.id}')">✕</button>
+    </div>
+  `).join("");
+}
+
+const STAGES = [
+  {tag:"stage 1 · seed", title:"A seed, resting", desc:"Add your first topic above — this is where the roadmap begins."},
+  {tag:"stage 2 · sprout", title:"Breaking soil", desc:"First signs of green. The habit is starting to take."},
+  {tag:"stage 3 · sapling", title:"Finding its footing", desc:"Roots are going down. This is where consistency starts to matter."},
+  {tag:"stage 4 · young canopy", title:"Reaching outward", desc:"Real branches now — you're deep into the roadmap."},
+  {tag:"stage 5 · full canopy", title:"Leaves everywhere", desc:"Most of the roadmap is behind you. Keep the streak alive."},
+  {tag:"stage 6 · ancient", title:"Fully grown", desc:"Every topic complete. Plant a new roadmap, or let this one stand."}
+];
+
+function getStageIndex(ratio, hasTopics){
+  if(!hasTopics) return 0;
+  if(ratio>=1) return 5;
+  if(ratio>=0.65) return 4;
+  if(ratio>=0.35) return 3;
+  if(ratio>=0.15) return 2;
+  return 1;
+}
+
+function renderProgress(){
+  const total = state.topics.length;
+  const done = state.topics.filter(t=>t.done).length;
+  const ratio = total>0 ? done/total : 0;
+  const idx = getStageIndex(ratio, total>0);
+
+  stageTag.textContent = STAGES[idx].tag;
+  stageTitle.textContent = STAGES[idx].title;
+  stageDesc.textContent = STAGES[idx].desc;
+  ringNum.textContent = done;
+  ringTotal.textContent = total;
+
+  const circumference = 150.8;
+  ringProgress.style.strokeDashoffset = circumference - (circumference*ratio);
+
+  renderCanopy(ratio, done);
+}
+
+function renderCanopy(ratio, doneCount){
+  const w=260,h=320;
+  const trunkH = 50 + Math.min(120, ratio*130);
+  const baseY = h-20;
+  const topY = baseY - trunkH;
+  const cx = w/2;
+
+  let seed = 7;
+  function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMax meet">`;
+
+  // ground glow
+  svg += `<ellipse cx="${cx}" cy="${baseY+6}" rx="90" ry="10" fill="rgba(74,124,89,0.15)"/>`;
+
+  // roots hint
+  svg += `<path d="M ${cx-4} ${baseY} Q ${cx-22} ${baseY+4} ${cx-34} ${baseY+2}" stroke="#3d2a1c" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>`;
+  svg += `<path d="M ${cx+4} ${baseY} Q ${cx+22} ${baseY+4} ${cx+32} ${baseY+2}" stroke="#3d2a1c" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>`;
+
+  // trunk with slight curve + gradient
+  svg += `<defs>
+    <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d1f15"/>
+      <stop offset="50%" stop-color="#4a3222"/>
+      <stop offset="100%" stop-color="#2d1f15"/>
+    </linearGradient>
+  </defs>`;
+  svg += `<path d="M ${cx-9} ${baseY} C ${cx-11} ${baseY-trunkH*0.5}, ${cx-6} ${baseY-trunkH*0.8}, ${cx-2} ${topY}
+           L ${cx+2} ${topY}
+           C ${cx+6} ${baseY-trunkH*0.8}, ${cx+11} ${baseY-trunkH*0.5}, ${cx+9} ${baseY} Z" fill="url(#trunkGrad)"/>`;
+
+  if(ratio>0.1){
+    const branches = [
+      {dx:-46,dy:-32,w:5}, {dx:44,dy:-24,w:5},
+      {dx:-30,dy:-58,w:3.5}, {dx:34,dy:-52,w:3.5},
+      {dx:-14,dy:-72,w:3}, {dx:16,dy:-68,w:3}
+    ];
+    const visibleBranches = Math.ceil(branches.length * Math.min(1,ratio/0.65));
+    for(let i=0;i<visibleBranches;i++){
+      const b = branches[i];
+      svg += `<path d="M ${cx} ${topY+18} Q ${cx+b.dx*0.5} ${topY+b.dy*0.5} ${cx+b.dx} ${topY+b.dy}" stroke="#4a3222" stroke-width="${b.w}" fill="none" stroke-linecap="round"/>`;
+    }
+  }
+
+  // canopy leaves
+  const leafCount = Math.min(60, doneCount*4);
+  const canopyCX = cx, canopyCY = topY - 6;
+  const canopyRX = 68, canopyRY = 54;
+  const palette = ["#4a7c59","#7fb069","#c9e4a8","#5d8f4f"];
+  for(let i=0;i<leafCount;i++){
+    const a = rnd()*Math.PI*2;
+    const r = Math.sqrt(rnd());
+    const lx = canopyCX + Math.cos(a)*canopyRX*r;
+    const ly = canopyCY + Math.sin(a)*canopyRY*r;
+    const size = 4.5 + rnd()*5;
+    const color = palette[i%palette.length];
+    const rot = rnd()*360;
+    svg += `<ellipse class="leaf-particle" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" rx="${size.toFixed(1)}" ry="${(size*0.65).toFixed(1)}" fill="${color}" opacity="0.9" transform="rotate(${rot.toFixed(0)} ${lx.toFixed(1)} ${ly.toFixed(1)})"/>`;
+  }
+
+  if(ratio>=1 && doneCount>0){
+    for(let i=0;i<10;i++){
+      const a = rnd()*Math.PI*2;
+      const r = Math.sqrt(rnd())*0.85;
+      const lx = canopyCX + Math.cos(a)*canopyRX*r;
+      const ly = canopyCY + Math.sin(a)*canopyRY*r;
+      svg += `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.8" fill="#e0a458"/>`;
+    }
+  }
+
+  svg += `</svg>`;
+  canopyVisual.innerHTML = svg;
+}
+
+function computeStreak(){
+  const dates = Object.keys(state.history);
+  if(dates.length===0) return 0;
+  let streak = 0;
+  let cursor = new Date(); cursor.setHours(0,0,0,0);
+  while(true){
+    const key = cursor.getFullYear()+"-"+String(cursor.getMonth()+1).padStart(2,"0")+"-"+String(cursor.getDate()).padStart(2,"0");
+    if(state.history[key] && state.history[key].length>0){
+      streak++;
+      cursor.setDate(cursor.getDate()-1);
+    } else break;
+  }
+  return streak;
+}
+
+function renderStats(){
+  streakNum.textContent = computeStreak();
+  todayNum.textContent = (state.history[todayKey()]||[]).length;
+  totalNum.textContent = Object.values(state.history).reduce((a,arr)=>a+arr.length,0);
+}
+
+function renderHeatmap(){
+  const days = 49;
+  const cells = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  for(let i=days-1;i>=0;i--){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const count = (state.history[key]||[]).length;
+    let level=0;
+    if(count>=1) level=1;
+    if(count>=3) level=2;
+    if(count>=5) level=3;
+    if(count>=8) level=4;
+    cells.push(`<div class="day-cell" data-level="${level}" title="${key}: ${count} topic${count===1?'':'s'}"></div>`);
+  }
+  heatmap.innerHTML = cells.join("");
+}
+
+function renderHistory(){
+  const dates = Object.keys(state.history).sort().reverse();
+  if(dates.length===0){
+    historyList.innerHTML = `<div class="empty-state"><span class="glyph">◌</span>Nothing logged yet. Tick off a topic to begin your history.</div>`;
+    return;
+  }
+  historyList.innerHTML = dates.map(key=>`
+    <div class="history-day">
+      <div class="history-date">${fmtDate(key)}</div>
+      ${state.history[key].map(h=>`<div class="history-topic"><span class="sub-tag">${escapeHtml(h.subject)}</span>${escapeHtml(h.name)}</div>`).join("")}
+    </div>
+  `).join("");
+}
+
+function spawnFireflies(){
+  for(let i=0;i<12;i++){
+    const f = document.createElement("div");
+    f.className = "firefly";
+    f.style.left = (Math.random()*100)+"vw";
+    f.style.top = (40+Math.random()*50)+"vh";
+    f.style.animationDelay = (Math.random()*14)+"s";
+    f.style.animationDuration = (10+Math.random()*8)+"s";
+    document.body.appendChild(f);
+  }
+}
+
+function render(){
+  renderTopics();
+  renderProgress();
+  renderStats();
+  renderHeatmap();
+  renderHistory();
+}
+
+window.Canopy = { toggle: toggleTopic, remove: deleteTopic, notes: toggleNotes, updateNotes: updateNotes };
+
+spawnFireflies();
+render();
+})();
+</script>
+</body>
+</html>
